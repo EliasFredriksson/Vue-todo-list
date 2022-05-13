@@ -2,7 +2,13 @@
     <div class="__todo">
         <div class="__infos">
             <h3>{{ todo.text }}</h3>
-            <p>Deadline: {{ todo.deadline.toLocaleString() }}</p>
+            <hr />
+
+            <p>
+                Deadline:
+                {{ todo.deadline.toLocaleDateString() }} -
+                {{ todo.deadline.toLocaleTimeString().substr(0, 5) }}
+            </p>
         </div>
         <div class="__buttons">
             <button

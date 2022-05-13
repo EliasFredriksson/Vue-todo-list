@@ -14,8 +14,8 @@
             <h2>Current</h2>
             <p v-if="this.filterTodos(false).length < 1">Add some todos!</p>
             <TodoComponent
-                @removeTodo="this.removeTodo(todo.id)"
-                @toggleDone="this.toggleTodo(todo.id)"
+                @removeTodo="this.removeTodo(todo)"
+                @toggleDone="this.toggleTodo(todo)"
                 @editTodo="this.triggerEditModal(todo)"
                 v-for="todo in this.filterTodos(false)"
                 :key="todo.id"
@@ -25,24 +25,22 @@
             <h2>Done</h2>
             <p v-if="this.filterTodos(true).length < 1">Finish some todos!</p>
             <TodoComponent
-                @removeTodo="this.removeTodo(todo.id)"
-                @toggleDone="this.toggleTodo(todo.id)"
-                @editTodo="this.triggerEditModal(todo.id)"
+                @removeTodo="this.removeTodo(todo)"
+                @toggleDone="this.toggleTodo(todo)"
+                @editTodo="this.triggerEditModal(todo)"
                 v-for="todo in this.filterTodos(true)"
                 :key="todo.id"
                 :todo="todo"
             ></TodoComponent>
         </div>
-        <EditModalComponent
-            :todo="todoToBeEdited"
-            v-if="isEditModalVisable"
-            :class="[
-                {
-                    slideOut: isModalSlideOut,
-                },
-            ]"
-            @closedEditModal="editTodo"
-        ></EditModalComponent>
+        <Transition name="fade">
+            <EditModalComponent
+                :todo="todoToBeEdited"
+                v-if="isEditModalVisable"
+                @closedEditModal="editTodo"
+                @closeModal="closeModal"
+            ></EditModalComponent>
+        </Transition>
     </div>
 </template>
 
@@ -65,7 +63,7 @@ export default class TodoHandlerComponent extends Vue {
     isEditModalVisable = false;
     isModalSlideOut = true;
 
-    validateNewTodo(e: Event): void {
+    public validateNewTodo(e: Event): void {
         e.preventDefault();
         let form = e.target as HTMLFormElement;
         form.reportValidity();
@@ -78,7 +76,7 @@ export default class TodoHandlerComponent extends Vue {
         }
     }
 
-    mounted(): void {
+    public mounted(): void {
         this.todos = this.fetchTodos();
     }
 
@@ -126,13 +124,8 @@ export default class TodoHandlerComponent extends Vue {
         this.storeTodos();
     }
 
-    public removeTodo(id: number): void {
-        this.todos.forEach((todo, index) => {
-            if (todo.id === id) {
-                this.todos.splice(index, 1);
-                return;
-            }
-        });
+    public removeTodo(todo: Todo): void {
+        this.todos.splice(this.todos.indexOf(todo), 1);
         this.storeTodos();
     }
 
@@ -156,16 +149,17 @@ export default class TodoHandlerComponent extends Vue {
             }
         });
         this.isEditModalVisable = false;
+        this.todoToBeEdited = undefined;
     }
 
-    public toggleTodo(id: number): void {
-        const todo = this.todos.find((t) => {
-            return t.id === id;
-        });
-        if (todo) {
-            todo.done = !todo.done;
-            this.storeTodos();
-        }
+    public closeModal(): void {
+        this.isEditModalVisable = false;
+        this.todoToBeEdited = undefined;
+    }
+
+    public toggleTodo(todo: Todo): void {
+        todo.done = !todo.done;
+        this.storeTodos();
     }
 
     public filterTodos(isDone: boolean): Todo[] {
@@ -205,10 +199,32 @@ export default class TodoHandlerComponent extends Vue {
         width: min(100%, 800px);
         padding: Vars.$spacing-medium;
         box-shadow: 0px 0px 10px 0px Colors.$dark;
-
+        flex-grow: 1;
         display: flex;
         flex-direction: column;
         gap: Vars.$spacing-medium;
+        @include Mixins.breakpoint-tablet {
+            flex-grow: 0;
+        }
+    }
+}
+/* we will explain what these classes do next! */
+.fade-enter-active {
+    animation: fade-in 0.2s ease;
+}
+.fade-leave-active {
+    animation: fade-in 0.2s ease reverse;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
     }
 }
 </style>
