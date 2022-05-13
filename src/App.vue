@@ -1,15 +1,22 @@
 <template>
-    <img alt="Vue logo" src="./assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
+    <body>
+        <Header></Header>
+        <Main></Main>
+        <Footer></Footer>
+    </body>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import HelloWorld from "./components/HelloWorld.vue";
+import Header from "./components/Header.vue";
+import Main from "./components/Main.vue";
+import Footer from "./components/Footer.vue";
 
 @Options({
     components: {
-        HelloWorld,
+        Header,
+        Main,
+        Footer,
     },
 })
 export default class App extends Vue {}
@@ -22,6 +29,23 @@ export default class App extends Vue {}
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
     color: #2c3e50;
-    margin-top: 60px;
+    height: 100%;
+}
+
+*::after,
+*::before,
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 </style>
