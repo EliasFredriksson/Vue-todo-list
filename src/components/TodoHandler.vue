@@ -148,8 +148,7 @@ export default class TodoHandlerComponent extends Vue {
                 return;
             }
         });
-        this.isEditModalVisable = false;
-        this.todoToBeEdited = undefined;
+        this.closeModal();
     }
 
     public closeModal(): void {
@@ -208,10 +207,12 @@ export default class TodoHandlerComponent extends Vue {
         }
     }
 }
-/* we will explain what these classes do next! */
+
+// Antimation for when the element enters the DOM.
 .fade-enter-active {
     animation: fade-in 0.2s ease;
 }
+// Animation for when the element is removed from the DOM.
 .fade-leave-active {
     animation: fade-in 0.2s ease reverse;
 }
